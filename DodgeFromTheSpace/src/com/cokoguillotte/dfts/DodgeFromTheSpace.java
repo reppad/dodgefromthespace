@@ -78,4 +78,24 @@ public class DodgeFromTheSpace extends BaseGameActivity {
 	public void onLoadComplete() {
 		//rien à faire
 	}
+
+
+//	private void createSpriteSpawnTimeHandler(float seconds)
+//	{
+//		final TimerHandler spriteTimerHandler;
+//		this.getEngine().registerUpdateHandler(spriteTimerHandler = new TimerHandler(seconds, new ITimerCallback()
+//		{
+//			@Override
+//			public void onTimePassed(final TimerHandler pTimerHandler)
+//			{
+//				spriteTimerHandler.reset();
+//				//Random Position Generator
+//				final float xPos = MathUtils.random(30.0f, (CAMERA_WIDTH - 30.0f));
+//				final float yPos = MathUtils.random(30.0f, (CAMERA_HEIGHT - 30.0f));
+//
+//				Sprite sprite = new Sprite(xPos, yPos, this.mSpriteTextureRegion);
+//				this.mEngine.getScene().getTopLayer().addEntity(sprite);
+//			}
+//		}));
+//	}
 }
