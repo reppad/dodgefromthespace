@@ -5,12 +5,14 @@ import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
 public class SpaceShip extends AnimatedSprite {
 
+	public SpaceShip(float pX, float pY, float pTileWidth, float pTileHeight,
+			TiledTextureRegion pTiledTextureRegion) {
+		super(pX, pY, pTileWidth, pTileHeight, pTiledTextureRegion);
+	}
+
 	private static final int CAMERA_HEIGHT = DodgeFromTheSpace.CAMERA_HEIGHT;
 	private static final float VELOCITY = DodgeFromTheSpace.SPACESHIP_VELOCITY;
 
-	public SpaceShip(final float pX, final float pY, final TiledTextureRegion pTextureRegion) {
-		super(pX, pY, pTextureRegion);
-	}
 
 	@Override
 	protected void onManagedUpdate(final float pSecondsElapsed) {
