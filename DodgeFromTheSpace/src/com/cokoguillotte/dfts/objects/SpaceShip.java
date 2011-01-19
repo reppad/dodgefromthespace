@@ -4,11 +4,19 @@ import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
+import org.anddev.andengine.extension.physics.box2d.PhysicsConnector;
+import org.anddev.andengine.extension.physics.box2d.PhysicsFactory;
+import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
 import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
+import android.hardware.SensorManager;
+
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.cokoguillotte.dfts.gamevar.Consts;
 import com.cokoguillotte.dfts.interfaces.IGraphicsObject;
 
@@ -18,7 +26,7 @@ public class SpaceShip extends IGraphicsObject implements IUpdateHandler {
 	private Texture mTextureSpaceship;
 	private TiledTextureRegion mTiledTextureRegionSpaceship;
 	private Engine mEngine;
-	private AnimatedSprite spaceship;
+	private AnimatedSprite mSpaceship;
 
 	@Override
 	public void loadResources(Engine engine) {
@@ -37,10 +45,17 @@ public class SpaceShip extends IGraphicsObject implements IUpdateHandler {
 		final int sSPosY = (Consts.CAMERA_HEIGHT - mTiledTextureRegionSpaceship.getHeight()) / 2;
 		
 		//creation du sprite et ajout sur la scene
-		spaceship = new AnimatedSprite(sSPosX, sSPosY, 48, 48, mTiledTextureRegionSpaceship);
-		spaceship.animate(100);
-//		spaceship.setVelocity(0, Consts.SPACESHIP_VELOCITY);
-		scene.getTopLayer().addEntity(spaceship);
+		mSpaceship = new AnimatedSprite(sSPosX, sSPosY, 48, 48, mTiledTextureRegionSpaceship);
+		mSpaceship.animate(100);
+		//spaceship.setVelocity(0, Consts.SPACESHIP_VELOCITY);
+		
+		scene.getTopLayer().addEntity(mSpaceship);
+	}
+	
+	public void createPhysics(PhysicsWorld physicsWorld){
+		final Body body;
+		body = PhysicsFactory.createCircleBody(physicsWorld, mSpaceship, BodyType.DynamicBody, Consts.FIXTURE_DEF);
+		physicsWorld.registerPhysicsConnector(new PhysicsConnector(mSpaceship, body, true, true, false, false));
 	}
 
 	@Override
@@ -51,6 +66,16 @@ public class SpaceShip extends IGraphicsObject implements IUpdateHandler {
 
 	@Override
 	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void startEngine(PhysicsWorld physicsWorld) {
+		final Body body = physicsWorld.getPhysicsConnectorManager().findBodyByShape(mSpaceship);
+		body.setLinearVelocity(new Vector2(0, -SensorManager.GRAVITY_EARTH*2));
+	}
+
+	public void stopEngine() {
 		// TODO Auto-generated method stub
 		
 	}

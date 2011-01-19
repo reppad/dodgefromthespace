@@ -7,9 +7,15 @@ import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
+import org.anddev.andengine.extension.physics.box2d.PhysicsFactory;
+import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
+import android.hardware.SensorManager;
+
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.cokoguillotte.dfts.gamevar.Consts;
 import com.cokoguillotte.dfts.objects.Area;
 import com.cokoguillotte.dfts.objects.Asteroids;
@@ -19,6 +25,7 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 
 	//objets
 	private Camera				mCamera;
+	private PhysicsWorld		mPhysicsWorld;
 	
 	private SpaceShip			mSpaceship;
 	private Asteroids			mAsteroids;
@@ -52,11 +59,17 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 	@Override
 	public Scene onLoadScene() {
 		final Scene scene = new Scene(1);
+
+		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 0), false);
+		this.mPhysicsWorld.setGravity(new Vector2(0, SensorManager.GRAVITY_EARTH));
 		
 		mArea.loadScene(scene);
 		
 		mAsteroids.loadScene(scene);
 		mSpaceship.loadScene(scene);
+		mSpaceship.createPhysics(mPhysicsWorld);
+		
+		scene.registerUpdateHandler(this.mPhysicsWorld);
 		
 		//TODO collisions (surement pas a faire ici)
 //		scene.registerUpdateHandler(new IUpdateHandler() {
@@ -82,12 +95,16 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 	}
 
 	@Override
-	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+	public boolean onSceneTouchEvent(Scene pScene, final TouchEvent pSceneTouchEvent) {
 		runOnUpdateThread(new Runnable() {
-			
-			@Override
 			public void run() {
-//				mSpaceship.changeDirection();
+				if(mPhysicsWorld != null){
+					if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
+						mSpaceship.startEngine(mPhysicsWorld);
+					}else if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP) {
+						mSpaceship.stopEngine();
+					}
+				}
 			}
 		});
 		return false;
