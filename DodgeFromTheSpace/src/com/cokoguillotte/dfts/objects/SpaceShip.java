@@ -1,7 +1,10 @@
-package com.cokoguillotte.dfts;
+package com.cokoguillotte.dfts.objects;
 
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
+
+import com.cokoguillotte.dfts.DodgeFromTheSpace;
+import com.cokoguillotte.dfts.gamevar.Consts;
 
 public class SpaceShip extends AnimatedSprite {
 
@@ -10,8 +13,8 @@ public class SpaceShip extends AnimatedSprite {
 		super(pX, pY, pTileWidth, pTileHeight, pTiledTextureRegion);
 	}
 
-	private static final int CAMERA_HEIGHT = DodgeFromTheSpace.CAMERA_HEIGHT;
-	private static final float VELOCITY = DodgeFromTheSpace.SPACESHIP_VELOCITY;
+	private static final int CAMERA_HEIGHT = Consts.CAMERA_HEIGHT;
+	private static final float VELOCITY = Consts.SPACESHIP_VELOCITY;
 
 
 	@Override
