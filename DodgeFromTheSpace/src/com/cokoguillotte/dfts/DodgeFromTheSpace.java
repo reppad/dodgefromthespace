@@ -7,11 +7,13 @@ import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
+import org.anddev.andengine.entity.scene.background.AutoParallaxBackground;
+import org.anddev.andengine.entity.scene.background.ParallaxBackground.ParallaxEntity;
+import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
-import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import com.cokoguillotte.dfts.gamevar.Consts;
@@ -23,8 +25,6 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 
 	//objets
 	private Camera				mCamera;
-	private Texture				mTextureSpaceship;
-	private TiledTextureRegion	mTiledTextureRegionSpaceship;
 	
 	private SpaceShip			mSpaceship;
 	private Asteroids			mAsteroids;
@@ -37,6 +37,9 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		mAsteroids = new Asteroids();
 		mAsteroids.setContext(this);
 		
+		mSpaceship = new SpaceShip();
+		mSpaceship.setContext(this);
+		
 		mArea = new Area();
 		mArea.setContext(this);
 		
@@ -47,16 +50,9 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 
 	@Override
 	public void onLoadResources() {
-		
 		mAsteroids.loadResources(this.mEngine);
+		mSpaceship.loadResources(this.mEngine);
 		mArea.loadResources(this.mEngine);
-		
-		mTextureSpaceship = new Texture(256, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-		
-		TextureRegionFactory.setAssetBasePath("gfx/");
-		mTiledTextureRegionSpaceship = TextureRegionFactory.createTiledFromAsset(mTextureSpaceship, this, "bugdroid.png", 0, 0, 8, 1);
-		
-		mEngine.getTextureManager().loadTextures(mTextureSpaceship);
 	}
 
 	@Override
@@ -64,18 +60,9 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		final Scene scene = new Scene(1);
 		
 		mArea.loadScene(scene);
-
-		//coordonnées du vaisseau
-		final int sSPosX = (Consts.CAMERA_WIDTH - mTiledTextureRegionSpaceship.getWidth()) / 3;
-		final int sSPosY = (Consts.CAMERA_HEIGHT - mTiledTextureRegionSpaceship.getHeight()) / 2;
-
-		//creation du sprite et ajout sur la scene
-		mSpaceship = new SpaceShip(sSPosX, sSPosY, 48, 48, mTiledTextureRegionSpaceship);
-		mSpaceship.animate(100);
-		mSpaceship.setVelocity(0, Consts.SPACESHIP_VELOCITY);
-		scene.getTopLayer().addEntity(mSpaceship);
 		
 		mAsteroids.loadScene(scene);
+		mSpaceship.loadScene(scene);
 		
 		//TODO collisions (surement pas a faire ici)
 //		scene.registerUpdateHandler(new IUpdateHandler() {
@@ -106,7 +93,7 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 			
 			@Override
 			public void run() {
-				mSpaceship.changeDirection();
+//				mSpaceship.changeDirection();
 			}
 		});
 		return false;
