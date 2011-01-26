@@ -9,20 +9,11 @@ import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
-import org.anddev.andengine.extension.physics.box2d.PhysicsFactory;
 import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
 import org.anddev.andengine.input.touch.TouchEvent;
-import org.anddev.andengine.opengl.font.Font;
-import org.anddev.andengine.opengl.font.FontFactory;
-import org.anddev.andengine.opengl.texture.Texture;
-import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
-import android.graphics.Color;
-import android.hardware.SensorManager;
-
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.cokoguillotte.dfts.gamevar.Consts;
 import com.cokoguillotte.dfts.objects.Area;
 import com.cokoguillotte.dfts.objects.Asteroids;
