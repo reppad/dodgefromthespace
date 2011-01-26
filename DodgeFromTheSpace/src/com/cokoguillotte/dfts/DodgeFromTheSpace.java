@@ -2,6 +2,8 @@ package com.cokoguillotte.dfts;
 
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
+import org.anddev.andengine.engine.handler.timer.ITimerCallback;
+import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
@@ -31,6 +33,9 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 	private Asteroids			mAsteroids;
 	private Area				mArea;
 	
+	private TimerHandler		mEngineAction;
+	private boolean				mScreenTouched;
+	
 	@Override
 	public Engine onLoadEngine() {
 		this.mCamera = new Camera(0, 0, Consts.CAMERA_WIDTH, Consts.CAMERA_HEIGHT);
@@ -59,9 +64,11 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 	@Override
 	public Scene onLoadScene() {
 		final Scene scene = new Scene(1);
-
+		
+		mScreenTouched = false;
+		
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 0), false);
-		this.mPhysicsWorld.setGravity(new Vector2(0, SensorManager.GRAVITY_EARTH));
+		//this.mPhysicsWorld.setGravity(new Vector2(0, SensorManager.GRAVITY_EARTH));
 		
 		mArea.loadScene(scene);
 		
@@ -70,6 +77,22 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		mSpaceship.createPhysics(mPhysicsWorld);
 		
 		scene.registerUpdateHandler(this.mPhysicsWorld);
+		
+		
+		mEngineAction = new TimerHandler(0.1f, true, new ITimerCallback() {
+			public void onTimePassed(TimerHandler pTimerHandler) {
+				if(mScreenTouched){
+					mSpaceship.speedUpEngine();
+					mSpaceship.applyEngineForce(mPhysicsWorld);
+				}else{
+					mSpaceship.speedDownEngine();
+					mSpaceship.applyEngineForce(mPhysicsWorld);
+					//mSpaceship.turnOffEngine();
+				}
+			}
+		});
+		
+		scene.registerUpdateHandler(mEngineAction);
 		
 		//TODO collisions (surement pas a faire ici)
 //		scene.registerUpdateHandler(new IUpdateHandler() {
@@ -96,17 +119,15 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, final TouchEvent pSceneTouchEvent) {
-		runOnUpdateThread(new Runnable() {
-			public void run() {
-				if(mPhysicsWorld != null){
-					if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
-						mSpaceship.startEngine(mPhysicsWorld);
-					}else if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP) {
-						mSpaceship.stopEngine();
-					}
-				}
+		if(mPhysicsWorld != null){
+			if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
+				mScreenTouched = true;
+				return true;
+			}else if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP) {
+				mScreenTouched = false;
+				return true;
 			}
-		});
+		}
 		return false;
 	}
 	

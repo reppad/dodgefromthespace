@@ -39,8 +39,8 @@ public class Area extends IGraphicsObject{
         		new Sprite(0, 0, 480, 320, mTextureRegionBackground0)));
         autoParallaxBackground.addParallaxEntity(new ParallaxEntity(-4.0f,
         		new Sprite(0, 0, 480, 320, mTextureRegionBackground1)));
-        autoParallaxBackground.addParallaxEntity(new ParallaxEntity(-8.0f,
-        		new Sprite(0, 0, 1024, 320, mTextureRegionBackground2)));
+        /*autoParallaxBackground.addParallaxEntity(new ParallaxEntity(-8.0f,
+        		new Sprite(0, 0, 1024, 320, mTextureRegionBackground2)));*/
         scene.setBackground(autoParallaxBackground);
 	}
 

@@ -27,10 +27,13 @@ public class SpaceShip extends IGraphicsObject implements IUpdateHandler {
 	private TiledTextureRegion mTiledTextureRegionSpaceship;
 	private Engine mEngine;
 	private AnimatedSprite mSpaceship;
+	
+	private int mEngineForce;
 
 	@Override
 	public void loadResources(Engine engine) {
 		mEngine = engine;
+		mEngineForce = 0;
 		
 		mTextureSpaceship = new Texture(256, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 		TextureRegionFactory.setAssetBasePath("gfx/");
@@ -70,14 +73,25 @@ public class SpaceShip extends IGraphicsObject implements IUpdateHandler {
 		
 	}
 
-	public void startEngine(PhysicsWorld physicsWorld) {
+	public void applyEngineForce(PhysicsWorld physicsWorld) {
 		final Body body = physicsWorld.getPhysicsConnectorManager().findBodyByShape(mSpaceship);
-		body.setLinearVelocity(new Vector2(0, -SensorManager.GRAVITY_EARTH*2));
+		body.setLinearVelocity(new Vector2(0, -mEngineForce));
 	}
-
-	public void stopEngine() {
-		// TODO Auto-generated method stub
-		
+	
+	public void speedUpEngine(){
+		if(mEngineForce<4){
+			mEngineForce++;
+		}
+	}
+	
+	public void speedDownEngine(){
+		if(mEngineForce>-4){
+			mEngineForce--;
+		}
+	}
+	
+	public void turnOffEngine(){
+		mEngineForce = 0;
 	}
 	
 }
