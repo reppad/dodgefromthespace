@@ -12,8 +12,13 @@ import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.extension.physics.box2d.PhysicsFactory;
 import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
 import org.anddev.andengine.input.touch.TouchEvent;
+import org.anddev.andengine.opengl.font.Font;
+import org.anddev.andengine.opengl.font.FontFactory;
+import org.anddev.andengine.opengl.texture.Texture;
+import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
+import android.graphics.Color;
 import android.hardware.SensorManager;
 
 import com.badlogic.gdx.math.Vector2;
@@ -21,6 +26,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.cokoguillotte.dfts.gamevar.Consts;
 import com.cokoguillotte.dfts.objects.Area;
 import com.cokoguillotte.dfts.objects.Asteroids;
+import com.cokoguillotte.dfts.objects.DistanceText;
 import com.cokoguillotte.dfts.objects.SpaceShip;
 
 public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouchListener {
@@ -32,6 +38,7 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 	private SpaceShip			mSpaceship;
 	private Asteroids			mAsteroids;
 	private Area				mArea;
+	private DistanceText		mDistanceText;
 	
 	private TimerHandler		mEngineAction;
 	private boolean				mScreenTouched;
@@ -49,6 +56,9 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		mArea = new Area();
 		mArea.setContext(this);
 		
+		mDistanceText = new DistanceText();
+		mDistanceText.setContext(this);
+		
 		return new Engine(
 				new EngineOptions(true, ScreenOrientation.LANDSCAPE,
 						new RatioResolutionPolicy(Consts.CAMERA_WIDTH, Consts.CAMERA_HEIGHT), mCamera));
@@ -59,6 +69,7 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		mAsteroids.loadResources(this.mEngine);
 		mSpaceship.loadResources(this.mEngine);
 		mArea.loadResources(this.mEngine);
+		mDistanceText.loadResources(this.mEngine);
 	}
 
 	@Override
@@ -68,13 +79,13 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		mScreenTouched = false;
 		
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 0), false);
-		//this.mPhysicsWorld.setGravity(new Vector2(0, SensorManager.GRAVITY_EARTH));
 		
 		mArea.loadScene(scene);
 		
 		mAsteroids.loadScene(scene);
 		mSpaceship.loadScene(scene);
 		mSpaceship.createPhysics(mPhysicsWorld);
+		mDistanceText.loadScene(scene);
 		
 		scene.registerUpdateHandler(this.mPhysicsWorld);
 		
@@ -89,6 +100,8 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 					mSpaceship.applyEngineForce(mPhysicsWorld);
 					//mSpaceship.turnOffEngine();
 				}
+				//increment distance
+				mDistanceText.incDistance();
 			}
 		});
 		
@@ -128,7 +141,7 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 				return true;
 			}
 		}
-		return false;
+		return true;
 	}
 	
 } //class
