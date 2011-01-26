@@ -23,8 +23,9 @@ public class Asteroids extends IGraphicsObject implements IUpdateHandler {
 	private TiledTextureRegion mTiledTextureRegionAsteroid;
 	private TiledTextureRegion mTiledTextureRegionAstraunaute;
 	private Engine mEngine;
+	private AnimatedSprite[] mFloatingObjects;
 	
-	private int mSpawnAstraunauteRate;
+	private int mSpawnAstronauteRate;
 	
 	@Override
 	public void onUpdate(float pSecondsElapsed) {
@@ -54,13 +55,28 @@ public class Asteroids extends IGraphicsObject implements IUpdateHandler {
 	@Override
 	public void loadScene(Scene scene) {
 		//creation des objets
-		mSpawnAstraunauteRate = 0;
+		mSpawnAstronauteRate = 0;
 		
-		createSpriteSpawnTimeHandler(1.5f);
+		mFloatingObjects = new AnimatedSprite[6];
+		//creation des asteroides
+		for (int i = 0; i < 5; i++) {
+			mFloatingObjects[i] = new AnimatedSprite(0, -100, mTiledTextureRegionAsteroid);
+			mFloatingObjects[i].addShapeModifier(new LoopShapeModifier(new RotationModifier(6, 0, 360)));
+			mFloatingObjects[i].setVelocity(-Consts.ASTEROID_VELOCITY, 0);
+			scene.getTopLayer().addEntity(mFloatingObjects[i]);
+		}
+		//creation de l'astronaute
+		mFloatingObjects[5] = new AnimatedSprite(0, -100, mTiledTextureRegionAstraunaute);
+		mFloatingObjects[5].animate(500);
+		mFloatingObjects[5].addShapeModifier(new LoopShapeModifier(new RotationModifier(6, 0, 360)));
+		mFloatingObjects[5].setVelocity(-Consts.ASTEROID_VELOCITY, 0);
+		scene.getTopLayer().addEntity(mFloatingObjects[5]);
+		
+		setSpritePositionTimeHandler(1.5f);
 	}
 	
-	//creation de sprites positionnes de facon aleatoires
-	private void createSpriteSpawnTimeHandler(float seconds)
+	//repositionnement des sprites de facon aleatoires sur Y
+	private void setSpritePositionTimeHandler(float seconds)
 	{
 		@SuppressWarnings("unused")
 		TimerHandler spriteTimerHandler;
@@ -74,20 +90,8 @@ public class Asteroids extends IGraphicsObject implements IUpdateHandler {
 				final float xPos = Consts.CAMERA_WIDTH;
 				final float yPos = MathUtils.random(0, (Consts.CAMERA_HEIGHT - mTiledTextureRegionAsteroid.getHeight()));
 
-				if(mSpawnAstraunauteRate<5){
-					final AnimatedSprite asteroid = new AnimatedSprite(xPos, yPos, mTiledTextureRegionAsteroid);
-					asteroid.addShapeModifier(new LoopShapeModifier(new RotationModifier(6, 0, 360)));
-					asteroid.setVelocity(-Consts.ASTEROID_VELOCITY, 0);
-					mEngine.getScene().getTopLayer().addEntity(asteroid);
-					mSpawnAstraunauteRate++;
-				}else{
-					final AnimatedSprite astraunaute = new AnimatedSprite(xPos, yPos, mTiledTextureRegionAstraunaute);
-					astraunaute.animate(500);
-					astraunaute.addShapeModifier(new LoopShapeModifier(new RotationModifier(6, 0, 360)));
-					astraunaute.setVelocity(-Consts.ASTEROID_VELOCITY, 0);
-					mEngine.getScene().getTopLayer().addEntity(astraunaute);
-					mSpawnAstraunauteRate = 0;
-				}
+				mFloatingObjects[mSpawnAstronauteRate].setPosition(xPos, yPos);
+				mSpawnAstronauteRate = (mSpawnAstronauteRate + 1) % 6;
 			}
 		}));
 	}//createSpriteSpawnTimeHandler

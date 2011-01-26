@@ -22,8 +22,10 @@ public class MenuText extends IGraphicsText {
 
 	private Texture mFontTexture;
 	private Font mFont;
+	
 	private Texture mFontTextureItem;
 	private Font mFontItem;
+	
 	private ChangeableText mTitre;
 	private ChangeableText mStart;
 	private ChangeableText mSetting;
