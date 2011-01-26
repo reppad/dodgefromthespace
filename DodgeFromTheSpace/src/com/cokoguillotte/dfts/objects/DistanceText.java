@@ -34,7 +34,7 @@ public class DistanceText extends IGraphicsText {
 	public void loadResources(Engine engine) {
 		FontFactory.setAssetBasePath("font/");
 		this.mFontTexture = new Texture(512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-		this.mFont = FontFactory.createFromAsset(mFontTexture, mContext, "Plok.ttf", 20, true, Color.WHITE);
+		this.mFont = FontFactory.createFromAsset(mFontTexture, mContext, "starjedi.ttf", 20, true, Color.WHITE);
 		
 		engine.getTextureManager().loadTexture(this.mFontTexture);
 		engine.getFontManager().loadFont(this.mFont);
@@ -42,7 +42,7 @@ public class DistanceText extends IGraphicsText {
 
 	@Override
 	public void loadScene(Scene scene) {
-		mDistanceText = new ChangeableText(5, 5, this.mFont, "Distance: 0", "Distance: XXXXX".length());
+		mDistanceText = new ChangeableText(15, 5, this.mFont, "Distance: 0", "Distance: XXXXX".length());
 		mDistanceText.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		mDistanceText.setAlpha(0.8f);
 		scene.getTopLayer().addEntity(mDistanceText);

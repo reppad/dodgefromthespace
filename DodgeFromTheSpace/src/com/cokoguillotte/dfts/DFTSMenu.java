@@ -18,28 +18,22 @@ import com.cokoguillotte.dfts.gamevar.Consts;
 import com.cokoguillotte.dfts.objects.Area;
 import com.cokoguillotte.dfts.objects.Asteroids;
 import com.cokoguillotte.dfts.objects.DistanceText;
+import com.cokoguillotte.dfts.objects.MenuText;
 import com.cokoguillotte.dfts.objects.SpaceShip;
 
-public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouchListener {
+public class DFTSMenu extends BaseGameActivity implements IOnSceneTouchListener {
 
 	//objets
 	private Camera				mCamera;
-	private PhysicsWorld		mPhysicsWorld;
 	
 	private SpaceShip			mSpaceship;
-	private Asteroids			mAsteroids;
 	private Area				mArea;
-	private DistanceText		mDistanceText;
 	
-	private TimerHandler		mEngineAction;
-	private boolean				mScreenTouched;
+	private MenuText			mMenu;
 	
 	@Override
 	public Engine onLoadEngine() {
 		this.mCamera = new Camera(0, 0, Consts.CAMERA_WIDTH, Consts.CAMERA_HEIGHT);
-		
-		mAsteroids = new Asteroids();
-		mAsteroids.setContext(this);
 		
 		mSpaceship = new SpaceShip();
 		mSpaceship.setContext(this);
@@ -47,8 +41,8 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		mArea = new Area();
 		mArea.setContext(this);
 		
-		mDistanceText = new DistanceText();
-		mDistanceText.setContext(this);
+		mMenu = new MenuText();
+		mMenu.setContext(this);
 		
 		return new Engine(
 				new EngineOptions(true, ScreenOrientation.LANDSCAPE,
@@ -57,60 +51,19 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 
 	@Override
 	public void onLoadResources() {
-		mAsteroids.loadResources(this.mEngine);
 		mSpaceship.loadResources(this.mEngine);
 		mArea.loadResources(this.mEngine);
-		mDistanceText.loadResources(this.mEngine);
+		mMenu.loadResources(this.mEngine);
 	}
 
 	@Override
 	public Scene onLoadScene() {
 		final Scene scene = new Scene(1);
 		
-		mScreenTouched = false;
-		
-		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 0), false);
-		
 		mArea.loadScene(scene);
-		mDistanceText.loadScene(scene);
 		
-		mAsteroids.loadScene(scene);
-		mSpaceship.loadScene(scene);
-		mSpaceship.createPhysics(mPhysicsWorld);
-		
-		scene.registerUpdateHandler(this.mPhysicsWorld);
-		
-		
-		mEngineAction = new TimerHandler(0.1f, true, new ITimerCallback() {
-			public void onTimePassed(TimerHandler pTimerHandler) {
-				if(mScreenTouched){
-					mSpaceship.speedUpEngine();
-					mSpaceship.applyEngineForce(mPhysicsWorld);
-				}else{
-					mSpaceship.speedDownEngine();
-					mSpaceship.applyEngineForce(mPhysicsWorld);
-					//mSpaceship.turnOffEngine();
-				}
-				//increment distance
-				mDistanceText.incDistance();
-			}
-		});
-		
-		scene.registerUpdateHandler(mEngineAction);
-		
-		//TODO collisions (surement pas a faire ici)
-//		scene.registerUpdateHandler(new IUpdateHandler() {
-//			
-//			@Override
-//			public void reset() { }
-//
-//			@Override
-//			public void onUpdate(final float pSecondsElapsed) {
-//				if(spaceship.collidesWith(asteroid)) {
-//					
-//				}
-//			}
-//		});
+		mSpaceship.loadSceneMenu(scene);
+		mMenu.loadScene(scene);
 		
 		scene.setOnSceneTouchListener(this);
 		return scene;
@@ -123,15 +76,7 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, final TouchEvent pSceneTouchEvent) {
-		if(mPhysicsWorld != null){
-			if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
-				mScreenTouched = true;
-				return true;
-			}else if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP) {
-				mScreenTouched = false;
-				return true;
-			}
-		}
+		
 		return true;
 	}
 	

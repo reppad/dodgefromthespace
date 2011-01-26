@@ -56,6 +56,18 @@ public class SpaceShip extends IGraphicsObject implements IUpdateHandler {
 		scene.getTopLayer().addEntity(mSpaceship);
 	}
 	
+	public void loadSceneMenu(Scene scene) {
+		//coordonnées du vaisseau
+		final int sSPosX = Consts.CAMERA_WIDTH - 150;
+		final int sSPosY = (Consts.CAMERA_HEIGHT - mTiledTextureRegionSpaceship.getHeight()) / 2;
+		
+		//creation du sprite et ajout sur la scene
+		mSpaceship = new AnimatedSprite(sSPosX, sSPosY, 48, 48, mTiledTextureRegionSpaceship);
+		mSpaceship.animate(100);
+		
+		scene.getTopLayer().addEntity(mSpaceship);
+	}
+	
 	public void createPhysics(PhysicsWorld physicsWorld){
 		final Body body;
 		body = PhysicsFactory.createCircleBody(physicsWorld, mSpaceship, BodyType.DynamicBody, Consts.FIXTURE_DEF);
