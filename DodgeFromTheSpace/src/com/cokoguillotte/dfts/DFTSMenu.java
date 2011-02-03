@@ -2,22 +2,19 @@ package com.cokoguillotte.dfts;
 
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
-import org.anddev.andengine.engine.handler.timer.ITimerCallback;
-import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
-import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
-import com.badlogic.gdx.math.Vector2;
+import android.content.Intent;
+import android.widget.Toast;
+
 import com.cokoguillotte.dfts.gamevar.Consts;
 import com.cokoguillotte.dfts.objects.Area;
-import com.cokoguillotte.dfts.objects.Asteroids;
-import com.cokoguillotte.dfts.objects.DistanceText;
 import com.cokoguillotte.dfts.objects.MenuText;
 import com.cokoguillotte.dfts.objects.SpaceShip;
 
@@ -76,7 +73,30 @@ public class DFTSMenu extends BaseGameActivity implements IOnSceneTouchListener 
 
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, final TouchEvent pSceneTouchEvent) {
-		
+		if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP) {
+			
+			float x = pSceneTouchEvent.getX();
+			float y = pSceneTouchEvent.getY();
+			//Start
+			if( x >= 48 && x <= 153 && y >= 98 && y <= 122) {
+				Intent i = new Intent(this, DodgeFromTheSpace.class);
+				startActivity(i);
+			}
+			//Settings
+			if( x >= 48 && x <= 190 && y >= 148 && y <= 172) {
+				new Toast(this).makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+			}
+			//How to play
+			if( x >= 48 && x <= 268 && y >= 198 && y <= 222) {
+				new Toast(this).makeText(this, "How to play", Toast.LENGTH_SHORT).show();
+			}
+			//exit
+			if( x >= 48 && x <= 116 && y >= 248 && y <= 270) {
+				finish();
+			}
+			
+		}
+
 		return true;
 	}
 	

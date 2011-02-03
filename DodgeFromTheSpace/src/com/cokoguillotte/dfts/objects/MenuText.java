@@ -56,14 +56,7 @@ public class MenuText extends IGraphicsText {
 		scene.getTopLayer().addEntity(mTitre);
 
 		mStart = new ChangeableText(50, (Consts.CAMERA_HEIGHT/2)-75, this.mFontItem,
-				"Start", "Start".length()) {
-			@Override
-			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				Intent i = new Intent(mContext, DodgeFromTheSpace.class);
-		        mContext.startActivity(i);
-				return true;
-			}
-		};
+				"Start", "Start".length());
 		mStart.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		mStart.setAlpha(0.8f);
 		scene.getTopLayer().addEntity(mStart);
