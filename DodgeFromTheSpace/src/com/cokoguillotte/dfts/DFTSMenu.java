@@ -74,29 +74,30 @@ public class DFTSMenu extends BaseGameActivity implements IOnSceneTouchListener 
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, final TouchEvent pSceneTouchEvent) {
 		if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP) {
-			
 			float x = pSceneTouchEvent.getX();
 			float y = pSceneTouchEvent.getY();
+			
 			//Start
 			if( x >= 48 && x <= 153 && y >= 98 && y <= 122) {
 				Intent i = new Intent(this, DodgeFromTheSpace.class);
 				startActivity(i);
-			}
+			} else
+				
 			//Settings
 			if( x >= 48 && x <= 190 && y >= 148 && y <= 172) {
-				new Toast(this).makeText(this, "Settings", Toast.LENGTH_SHORT).show();
-			}
+				Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+			} else
+				
 			//How to play
 			if( x >= 48 && x <= 268 && y >= 198 && y <= 222) {
-				new Toast(this).makeText(this, "How to play", Toast.LENGTH_SHORT).show();
-			}
+				Toast.makeText(this, "How to play", Toast.LENGTH_SHORT).show();
+			} else
+				
 			//exit
 			if( x >= 48 && x <= 116 && y >= 248 && y <= 270) {
 				finish();
 			}
-			
 		}
-
 		return true;
 	}
 	
