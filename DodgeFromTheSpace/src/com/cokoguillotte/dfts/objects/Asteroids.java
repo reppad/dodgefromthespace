@@ -5,6 +5,7 @@ import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.engine.handler.timer.ITimerCallback;
 import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.entity.scene.Scene;
+import org.anddev.andengine.entity.shape.IShape;
 import org.anddev.andengine.entity.shape.modifier.LoopShapeModifier;
 import org.anddev.andengine.entity.shape.modifier.RotationModifier;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
@@ -26,6 +27,7 @@ public class Asteroids extends IGraphicsObject implements IUpdateHandler {
 	private AnimatedSprite[] mFloatingObjects;
 	
 	private int mSpawnAstronauteRate;
+	private boolean mSauvetageOK;
 	
 	@Override
 	public void onUpdate(float pSecondsElapsed) {
@@ -56,6 +58,7 @@ public class Asteroids extends IGraphicsObject implements IUpdateHandler {
 	public void loadScene(Scene scene) {
 		//creation des objets
 		mSpawnAstronauteRate = 0;
+		mSauvetageOK = false;
 		
 		mFloatingObjects = new AnimatedSprite[6];
 		//creation des asteroides
@@ -68,7 +71,7 @@ public class Asteroids extends IGraphicsObject implements IUpdateHandler {
 		//creation de l'astronaute
 		mFloatingObjects[5] = new AnimatedSprite(0, -100, mTiledTextureRegionAstraunaute);
 		mFloatingObjects[5].animate(500);
-		mFloatingObjects[5].addShapeModifier(new LoopShapeModifier(new RotationModifier(6, 0, 360)));
+		mFloatingObjects[5].addShapeModifier(new LoopShapeModifier(new RotationModifier(4, 0, 360)));
 		mFloatingObjects[5].setVelocity(-Consts.ASTEROID_VELOCITY, 0);
 		scene.getTopLayer().addEntity(mFloatingObjects[5]);
 		
@@ -91,9 +94,19 @@ public class Asteroids extends IGraphicsObject implements IUpdateHandler {
 				final float yPos = MathUtils.random(0, (Consts.CAMERA_HEIGHT - mTiledTextureRegionAsteroid.getHeight()));
 
 				mFloatingObjects[mSpawnAstronauteRate].setPosition(xPos, yPos);
+				if(mSpawnAstronauteRate==5){ mFloatingObjects[5].setVisible(true); }
 				mSpawnAstronauteRate = (mSpawnAstronauteRate + 1) % 6;
 			}
 		}));
 	}//createSpriteSpawnTimeHandler
+
+	public AnimatedSprite getAstraunote() {
+		return mFloatingObjects[5];
+	}
+
+	public void setAstraunoteSaved() {
+		mFloatingObjects[5].setVisible(false);
+		mSauvetageOK = true;
+	}
 
 }

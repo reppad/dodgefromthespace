@@ -22,10 +22,8 @@ public class DFTSMenu extends BaseGameActivity implements IOnSceneTouchListener 
 
 	//objets
 	private Camera				mCamera;
-	
 	private SpaceShip			mSpaceship;
 	private Area				mArea;
-	
 	private MenuText			mMenu;
 	
 	@Override

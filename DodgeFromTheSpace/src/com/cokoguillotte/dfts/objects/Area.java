@@ -26,7 +26,7 @@ public class Area extends IGraphicsObject{
 		TextureRegionFactory.setAssetBasePath("gfx/");
 		mTextureRegionBackground0 = TextureRegionFactory.createFromAsset(mTextureBackground, this.mContext, "fond0.png", 0, 0);
 		mTextureRegionBackground1 = TextureRegionFactory.createFromAsset(mTextureBackground, this.mContext, "fond1.png", 0, 320);
-		mTextureRegionBackground2 = TextureRegionFactory.createFromAsset(mTextureBackground, this.mContext, "fond2.png", 0, 640);
+		/*mTextureRegionBackground2 = TextureRegionFactory.createFromAsset(mTextureBackground, this.mContext, "fond2.png", 0, 640);*/
 
 		engine.getTextureManager().loadTextures(mTextureBackground);
 	}
@@ -35,7 +35,7 @@ public class Area extends IGraphicsObject{
 	public void loadScene(Scene scene) {
 		//background
 		final AutoParallaxBackground autoParallaxBackground = new AutoParallaxBackground(0, 0, 0, 5);
-        autoParallaxBackground.addParallaxEntity(new ParallaxEntity(-1.0f,
+        autoParallaxBackground.addParallaxEntity(new ParallaxEntity(0f,
         		new Sprite(0, 0, 480, 320, mTextureRegionBackground0)));
         autoParallaxBackground.addParallaxEntity(new ParallaxEntity(-4.0f,
         		new Sprite(0, 0, 480, 320, mTextureRegionBackground1)));

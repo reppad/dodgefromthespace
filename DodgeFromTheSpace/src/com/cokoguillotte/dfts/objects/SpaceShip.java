@@ -30,11 +30,13 @@ public class SpaceShip extends IGraphicsObject implements IUpdateHandler {
 	private AnimatedSprite mSpaceship;
 	
 	private int mEngineForce;
+	private boolean mForceChanged;
 
 	@Override
 	public void loadResources(Engine engine) {
 		mEngine = engine;
 		mEngineForce = 0;
+		mForceChanged = false;
 		
 		mTextureSpaceship = new Texture(256, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 		TextureRegionFactory.setAssetBasePath("gfx/");
@@ -87,24 +89,43 @@ public class SpaceShip extends IGraphicsObject implements IUpdateHandler {
 	}
 
 	public void applyEngineForce(PhysicsWorld physicsWorld) {
-		final Body body = physicsWorld.getPhysicsConnectorManager().findBodyByShape(mSpaceship);
-		body.setLinearVelocity(new Vector2(0, -mEngineForce));
+		if(mForceChanged){
+			final Body body = physicsWorld.getPhysicsConnectorManager().findBodyByShape(mSpaceship);
+			body.setLinearVelocity(new Vector2(0, -mEngineForce));
+			mForceChanged = false;
+		}
 	}
 	
 	public void speedUpEngine(){
-		if(mEngineForce<4){
-			mEngineForce++;
+		if(mSpaceship.getY()>5){
+			if(mEngineForce<4){
+				mEngineForce++;
+				mForceChanged = true;
+			}
+		}else{
+			mEngineForce = 0;
+			mForceChanged = true;
 		}
 	}
 	
 	public void speedDownEngine(){
-		if(mEngineForce>-4){
-			mEngineForce--;
+		if(mSpaceship.getY()<(Consts.CAMERA_HEIGHT-64)){
+			if(mEngineForce>-4){
+				mEngineForce--;
+				mForceChanged = true;
+			}
+		}else{
+			mEngineForce = 0;
+			mForceChanged = true;
 		}
 	}
 	
 	public void turnOffEngine(){
 		mEngineForce = 0;
+	}
+
+	public AnimatedSprite getSpaceShip() {
+		return mSpaceship;
 	}
 	
 }

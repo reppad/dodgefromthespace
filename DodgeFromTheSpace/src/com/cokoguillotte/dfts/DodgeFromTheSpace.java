@@ -2,6 +2,7 @@ package com.cokoguillotte.dfts;
 
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
+import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.engine.handler.timer.ITimerCallback;
 import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
@@ -98,19 +99,18 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		
 		scene.registerUpdateHandler(mEngineAction);
 		
-		//TODO collisions (surement pas a faire ici)
-//		scene.registerUpdateHandler(new IUpdateHandler() {
-//			
-//			@Override
-//			public void reset() { }
-//
-//			@Override
-//			public void onUpdate(final float pSecondsElapsed) {
-//				if(spaceship.collidesWith(asteroid)) {
-//					
-//				}
-//			}
-//		});
+		scene.registerUpdateHandler(new IUpdateHandler() {
+		
+			@Override
+			public void reset() { }
+			
+			@Override
+			public void onUpdate(final float pSecondsElapsed) {
+				if(mSpaceship.getSpaceShip().collidesWith(mAsteroids.getAstraunote())) {
+					mAsteroids.setAstraunoteSaved();
+				}
+			}
+		});
 		
 		scene.setOnSceneTouchListener(this);
 		return scene;
