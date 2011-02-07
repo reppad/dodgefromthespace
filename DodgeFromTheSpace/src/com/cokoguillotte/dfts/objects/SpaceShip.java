@@ -26,8 +26,10 @@ public class SpaceShip extends IGraphicsObject implements IUpdateHandler {
 	
 	private Texture mTextureSpaceship;
 	private TiledTextureRegion mTiledTextureRegionSpaceship;
+	private TiledTextureRegion mTiledTextureRegionExplosion;
 	private Engine mEngine;
 	private AnimatedSprite mSpaceship;
+	private AnimatedSprite mExplosion;
 	
 	private int mEngineForce;
 	private boolean mForceChanged;
@@ -38,9 +40,10 @@ public class SpaceShip extends IGraphicsObject implements IUpdateHandler {
 		mEngineForce = 0;
 		mForceChanged = false;
 		
-		mTextureSpaceship = new Texture(256, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		mTextureSpaceship = new Texture(512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 		TextureRegionFactory.setAssetBasePath("gfx/");
 		mTiledTextureRegionSpaceship = TextureRegionFactory.createTiledFromAsset(mTextureSpaceship, this.mContext, "bugdroid.png", 0, 0, 8, 1);
+		mTiledTextureRegionExplosion = TextureRegionFactory.createTiledFromAsset(mTextureSpaceship, this.mContext, "sprite_explodeoptimized.png", 0, 32, 6, 3);
 		mEngine.getTextureManager().loadTextures(mTextureSpaceship);
 	}
 
@@ -126,6 +129,13 @@ public class SpaceShip extends IGraphicsObject implements IUpdateHandler {
 
 	public AnimatedSprite getSpaceShip() {
 		return mSpaceship;
+	}
+
+	public void die(Scene scene) {
+		mExplosion = new AnimatedSprite(mSpaceship.getX(), mSpaceship.getY(), 75, 95, mTiledTextureRegionExplosion);
+		mExplosion.animate(50, false);
+		scene.getTopLayer().addEntity(mExplosion);
+		mSpaceship.setVisible(false);
 	}
 	
 }

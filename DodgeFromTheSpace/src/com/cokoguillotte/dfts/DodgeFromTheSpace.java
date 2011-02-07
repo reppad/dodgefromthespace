@@ -10,6 +10,7 @@ import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
+import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
@@ -34,6 +35,7 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 	
 	private TimerHandler		mEngineAction;
 	private boolean				mScreenTouched;
+	private boolean				mGameOver;
 	
 	@Override
 	public Engine onLoadEngine() {
@@ -69,6 +71,7 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		final Scene scene = new Scene(1);
 		
 		mScreenTouched = false;
+		mGameOver = false;
 		
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 0), false);
 		
@@ -84,16 +87,18 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		
 		mEngineAction = new TimerHandler(0.1f, true, new ITimerCallback() {
 			public void onTimePassed(TimerHandler pTimerHandler) {
-				if(mScreenTouched){
-					mSpaceship.speedUpEngine();
-					mSpaceship.applyEngineForce(mPhysicsWorld);
-				}else{
-					mSpaceship.speedDownEngine();
-					mSpaceship.applyEngineForce(mPhysicsWorld);
-					//mSpaceship.turnOffEngine();
+				if(!mGameOver){
+					if(mScreenTouched){
+						mSpaceship.speedUpEngine();
+						mSpaceship.applyEngineForce(mPhysicsWorld);
+					}else{
+						mSpaceship.speedDownEngine();
+						mSpaceship.applyEngineForce(mPhysicsWorld);
+						//mSpaceship.turnOffEngine();
+					}
+					//increment distance
+					mDistanceText.incDistance();
 				}
-				//increment distance
-				mDistanceText.incDistance();
 			}
 		});
 		
@@ -106,8 +111,19 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 			
 			@Override
 			public void onUpdate(final float pSecondsElapsed) {
-				if(mSpaceship.getSpaceShip().collidesWith(mAsteroids.getAstraunote())) {
-					mAsteroids.setAstraunoteSaved();
+				if(!mGameOver){
+					if(mSpaceship.getSpaceShip().collidesWith(mAsteroids.getAstraunote())) {
+						mAsteroids.setAstraunoteSaved();
+					}
+					
+					AnimatedSprite []asteroids = mAsteroids.getAsteroids();
+					for(int i = 0; i<5;i++){
+						if(mSpaceship.getSpaceShip().collidesWith(asteroids[i])) {
+							//Mort du vaisseau !!!
+							mSpaceship.die(scene);
+							mGameOver = true;
+						}
+					}
 				}
 			}
 		});
@@ -123,7 +139,7 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, final TouchEvent pSceneTouchEvent) {
-		if(mPhysicsWorld != null){
+		if(mPhysicsWorld != null && !mGameOver){
 			if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
 				mScreenTouched = true;
 				return true;

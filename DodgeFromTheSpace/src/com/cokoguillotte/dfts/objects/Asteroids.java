@@ -24,7 +24,9 @@ public class Asteroids extends IGraphicsObject implements IUpdateHandler {
 	private TiledTextureRegion mTiledTextureRegionAsteroid;
 	private TiledTextureRegion mTiledTextureRegionAstraunaute;
 	private Engine mEngine;
+	
 	private AnimatedSprite[] mFloatingObjects;
+	private AnimatedSprite[] mAsteroids;		//Pointeurs sur les asteroids pour les collisions
 	
 	private int mSpawnAstronauteRate;
 	private boolean mSauvetageOK;
@@ -61,12 +63,15 @@ public class Asteroids extends IGraphicsObject implements IUpdateHandler {
 		mSauvetageOK = false;
 		
 		mFloatingObjects = new AnimatedSprite[6];
+		mAsteroids = new AnimatedSprite[5];
+		
 		//creation des asteroides
 		for (int i = 0; i < 5; i++) {
 			mFloatingObjects[i] = new AnimatedSprite(0, -100, mTiledTextureRegionAsteroid);
 			mFloatingObjects[i].addShapeModifier(new LoopShapeModifier(new RotationModifier(6, 0, 360)));
 			mFloatingObjects[i].setVelocity(-Consts.ASTEROID_VELOCITY, 0);
 			scene.getTopLayer().addEntity(mFloatingObjects[i]);
+			mAsteroids[i] = mFloatingObjects[i];
 		}
 		//creation de l'astronaute
 		mFloatingObjects[5] = new AnimatedSprite(0, -100, mTiledTextureRegionAstraunaute);
@@ -102,6 +107,10 @@ public class Asteroids extends IGraphicsObject implements IUpdateHandler {
 
 	public AnimatedSprite getAstraunote() {
 		return mFloatingObjects[5];
+	}
+	
+	public AnimatedSprite[] getAsteroids(){
+		return mAsteroids;
 	}
 
 	public void setAstraunoteSaved() {

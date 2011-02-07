@@ -11,6 +11,7 @@ public class Consts {
 
 	public static final float SPACESHIP_VELOCITY = 100.0f;
 	public static final float ASTEROID_VELOCITY = 80.0f;
+	public static final int	ASTEROID_MAX_NUMBER = 5;
 	
 	public static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
 
