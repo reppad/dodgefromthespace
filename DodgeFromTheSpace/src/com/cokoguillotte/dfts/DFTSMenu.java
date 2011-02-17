@@ -11,13 +11,22 @@ import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.cokoguillotte.dfts.gamevar.Consts;
 import com.cokoguillotte.dfts.objects.Area;
+import com.cokoguillotte.dfts.objects.CheckBox;
 import com.cokoguillotte.dfts.objects.MenuText;
+import com.cokoguillotte.dfts.objects.OptionsText;
 import com.cokoguillotte.dfts.objects.SpaceShip;
 
+/**
+ * Menu de l'application.
+ * Il permet d'afficher les différentes possibilités offerte à l'utilisateur au lancement.
+ * Il permet également d'afficher les options.
+ */
 public class DFTSMenu extends BaseGameActivity implements IOnSceneTouchListener {
 
 	//objets
@@ -26,9 +35,21 @@ public class DFTSMenu extends BaseGameActivity implements IOnSceneTouchListener 
 	private Area				mArea;
 	private MenuText			mMenu;
 	
+	private OptionsText			mOptions;
+	private CheckBox			mCheckBoxMusic,
+								mCheckBoxSounds,
+								mCheckBoxParticles;
+	
+	private boolean				mInOptions,
+								mMusicEnabled,
+								mSoundsEnabled,
+								mParticlesEnabled;
+	
 	@Override
 	public Engine onLoadEngine() {
 		this.mCamera = new Camera(0, 0, Consts.CAMERA_WIDTH, Consts.CAMERA_HEIGHT);
+		
+		mInOptions = false;
 		
 		mSpaceship = new SpaceShip();
 		mSpaceship.setContext(this);
@@ -38,6 +59,16 @@ public class DFTSMenu extends BaseGameActivity implements IOnSceneTouchListener 
 		
 		mMenu = new MenuText();
 		mMenu.setContext(this);
+		
+		mOptions = new OptionsText();
+		mOptions.setContext(this);
+		
+		mCheckBoxMusic = new CheckBox();
+		mCheckBoxMusic.setContext(this);
+		mCheckBoxSounds = new CheckBox();
+		mCheckBoxSounds.setContext(this);
+		mCheckBoxParticles = new CheckBox();
+		mCheckBoxParticles.setContext(this);
 		
 		return new Engine(
 				new EngineOptions(true, ScreenOrientation.LANDSCAPE,
@@ -49,6 +80,10 @@ public class DFTSMenu extends BaseGameActivity implements IOnSceneTouchListener 
 		mSpaceship.loadResources(this.mEngine);
 		mArea.loadResources(this.mEngine);
 		mMenu.loadResources(this.mEngine);
+		mOptions.loadResources(this.mEngine);
+		mCheckBoxMusic.loadResources(this.mEngine);
+		mCheckBoxSounds.loadResources(this.mEngine);
+		mCheckBoxParticles.loadResources(this.mEngine);
 	}
 
 	@Override
@@ -60,6 +95,14 @@ public class DFTSMenu extends BaseGameActivity implements IOnSceneTouchListener 
 		mSpaceship.loadSceneMenu(scene);
 		mMenu.loadScene(scene);
 		
+		mOptions.loadScene(scene);
+		mCheckBoxMusic.loadScene(scene);
+		mCheckBoxSounds.loadScene(scene);
+		mCheckBoxParticles.loadScene(scene);
+		mCheckBoxMusic.setPosition(50, (Consts.CAMERA_HEIGHT/2)-65);
+		mCheckBoxSounds.setPosition(50, (Consts.CAMERA_HEIGHT/2)-15);
+		mCheckBoxParticles.setPosition(50, (Consts.CAMERA_HEIGHT/2)+35);
+		
 		scene.setOnSceneTouchListener(this);
 		return scene;
 	}//onLoadScene
@@ -69,34 +112,117 @@ public class DFTSMenu extends BaseGameActivity implements IOnSceneTouchListener 
 		//rien à faire
 	}
 
+	/**
+	 * detection d'un appui sur l'écran
+	 */
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, final TouchEvent pSceneTouchEvent) {
+		//on s'interesse à l'endroit ou l'utilisateur releve son doigt
 		if(pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP) {
 			float x = pSceneTouchEvent.getX();
 			float y = pSceneTouchEvent.getY();
-			
-			//Start
-			if( x >= 48 && x <= 153 && y >= 98 && y <= 122) {
-				Intent i = new Intent(this, DodgeFromTheSpace.class);
-				startActivity(i);
-			} else
+
+			//Actions dans le menu
+			if(!mInOptions) {
+				//Start
+				if( x >= 48 && x <= 153 && y >= 98 && y <= 122) {
+					Intent i = new Intent(this, DodgeFromTheSpace.class);
+					startActivity(i);
+				} else
+
+				//Settings
+				if( x >= 48 && x <= 190 && y >= 148 && y <= 172) {
+					//chargement des options
+					SharedPreferences settings = getSharedPreferences("dftssettings", 0);
+					mMusicEnabled = settings.getBoolean("music_enabled", true);
+					mSoundsEnabled = settings.getBoolean("sounds_enabled", true);
+					mParticlesEnabled = settings.getBoolean("particles_enabled", true);
+					//initialisation de l'état des checkbox
+					mCheckBoxMusic.setState(mMusicEnabled);
+					mCheckBoxSounds.setState(mSoundsEnabled);
+					mCheckBoxParticles.setState(mParticlesEnabled);
+					//affichage des options
+					mInOptions = true;
+					refresh();
+				} else
+
+				//How to play
+				if( x >= 48 && x <= 268 && y >= 198 && y <= 222) {
+					Toast.makeText(this, "How to play", Toast.LENGTH_SHORT).show();
+				} else
+
+				//exit
+				if( x >= 46 && x <= 120 && y >= 246 && y <= 272) {
+					finish();
+				}
 				
-			//Settings
-			if( x >= 48 && x <= 190 && y >= 148 && y <= 172) {
-				Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
-			} else
-				
-			//How to play
-			if( x >= 48 && x <= 268 && y >= 198 && y <= 222) {
-				Toast.makeText(this, "How to play", Toast.LENGTH_SHORT).show();
-			} else
-				
-			//exit
-			if( x >= 48 && x <= 116 && y >= 248 && y <= 270) {
-				finish();
+			//Action dans les options
+			} else {
+				//Music
+				if( x >= 48 && x <= 188 && y >= 98 && y <= 122) {
+					mMusicEnabled = !mMusicEnabled;
+					mCheckBoxMusic.setState(mMusicEnabled);
+				} else
+
+				//Sounds
+				if( x >= 48 && x <= 220 && y >= 148 && y <= 172) {
+					mSoundsEnabled = !mSoundsEnabled;
+					mCheckBoxSounds.setState(mSoundsEnabled);
+				} else
+
+				//Particles
+				if( x >= 48 && x <= 265 && y >= 198 && y <= 222) {
+					mParticlesEnabled = !mParticlesEnabled;
+					mCheckBoxParticles.setState(mParticlesEnabled);
+				} else
+
+				//save
+				if( x >= 46 && x <= 181 && y >= 246 && y <= 272) {
+					Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+					//sauvegarde des options
+					SharedPreferences settings = getSharedPreferences("dftssettings", 0);
+					SharedPreferences.Editor editor = settings.edit();
+					editor.putBoolean("music_enabled", mMusicEnabled);
+					editor.putBoolean("sounds_enabled", mSoundsEnabled);
+					editor.putBoolean("particles_enabled", mParticlesEnabled);
+					editor.commit();
+					//retour au menu
+					mInOptions = false;
+					refresh();
+				}
 			}
 		}
 		return true;
+	}
+	
+	//Met à jour l'affichage entre le menu ou les options
+	public void refresh() {
+		if(mInOptions) {
+			mMenu.hide();
+			mOptions.show();
+			mCheckBoxMusic.show();
+			mCheckBoxSounds.show();
+			mCheckBoxParticles.show();
+		} else {
+			mOptions.hide();
+			mCheckBoxMusic.hide();
+			mCheckBoxSounds.hide();
+			mCheckBoxParticles.hide();
+			mMenu.show();
+		}
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		//interception de l'appui sur "back" dans les options
+		if((keyCode == KeyEvent.KEYCODE_BACK) && mInOptions) {
+			Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
+			mInOptions = false;
+			refresh();
+			return true;
+		}
+		//propagation sinon
+		return super.onKeyDown(keyCode, event);
 	}
 	
 } //class

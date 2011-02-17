@@ -5,16 +5,13 @@ import javax.microedition.khronos.opengles.GL10;
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.text.ChangeableText;
-import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.opengl.font.Font;
 import org.anddev.andengine.opengl.font.FontFactory;
 import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 
-import android.content.Intent;
 import android.graphics.Color;
 
-import com.cokoguillotte.dfts.DodgeFromTheSpace;
 import com.cokoguillotte.dfts.gamevar.Consts;
 import com.cokoguillotte.dfts.interfaces.IGraphicsText;
 
@@ -60,7 +57,6 @@ public class MenuText extends IGraphicsText {
 		mStart.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		mStart.setAlpha(0.8f);
 		scene.getTopLayer().addEntity(mStart);
-		scene.registerTouchArea(mStart);
 
 		mSetting = new ChangeableText(50, (Consts.CAMERA_HEIGHT/2)-25, this.mFontItem,
 				"Settings", "Settings".length());
@@ -79,8 +75,20 @@ public class MenuText extends IGraphicsText {
 		mQuit.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		mQuit.setAlpha(0.8f);
 		scene.getTopLayer().addEntity(mQuit);
-
-		scene.setTouchAreaBindingEnabled(true);
+	}
+	
+	public void show() {
+		mStart.setVisible(true);
+		mSetting.setVisible(true);
+		mHowToPlay.setVisible(true);
+		mQuit.setVisible(true);
+	}
+	
+	public void hide() {
+		mStart.setVisible(false);
+		mSetting.setVisible(false);
+		mHowToPlay.setVisible(false);
+		mQuit.setVisible(false);
 	}
 
 }
