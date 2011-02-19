@@ -35,7 +35,7 @@ public class Area extends IGraphicsObject{
 	public void loadScene(Scene scene) {
 		//background
 		final AutoParallaxBackground autoParallaxBackground = new AutoParallaxBackground(0, 0, 0, 5);
-        autoParallaxBackground.addParallaxEntity(new ParallaxEntity(0f,
+        autoParallaxBackground.addParallaxEntity(new ParallaxEntity(-1f,
         		new Sprite(0, 0, 480, 320, mTextureRegionBackground0)));
         autoParallaxBackground.addParallaxEntity(new ParallaxEntity(-4.0f,
         		new Sprite(0, 0, 480, 320, mTextureRegionBackground1)));
