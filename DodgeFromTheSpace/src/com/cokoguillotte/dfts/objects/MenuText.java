@@ -23,11 +23,15 @@ public class MenuText extends IGraphicsText {
 	private Texture mFontTextureItem;
 	private Font mFontItem;
 	
+	private Texture mFontTextureBestScore;
+	private Font mFontBestScore;
+	
 	private ChangeableText mTitre;
 	private ChangeableText mStart;
 	private ChangeableText mSetting;
 	private ChangeableText mHowToPlay;
 	private ChangeableText mQuit;
+	private ChangeableText mBestScore;
 	
 
 	@Override
@@ -42,35 +46,40 @@ public class MenuText extends IGraphicsText {
 		this.mFont = FontFactory.createFromAsset(mFontTexture, mContext, "starjedi.ttf", 32, true, Color.WHITE);
 		this.mFontTextureItem = new Texture(512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 		this.mFontItem = FontFactory.createFromAsset(mFontTextureItem, mContext, "starjedi.ttf", 28, true, Color.WHITE);
+		this.mFontTextureBestScore = new Texture(512, 512, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		this.mFontBestScore = FontFactory.createFromAsset(mFontTextureBestScore, mContext, "starjedi.ttf", 22, true, Color.WHITE);
 		
-		engine.getTextureManager().loadTextures(this.mFontTexture, this.mFontTextureItem);
-		engine.getFontManager().loadFonts(this.mFont, this.mFontItem);
+		engine.getTextureManager().loadTextures(mFontTexture, mFontTextureItem, mFontTextureBestScore);
+		engine.getFontManager().loadFonts(mFont, mFontItem, mFontBestScore);
 	}
 
 	@Override
 	public void loadScene(Scene scene) {
-		mTitre = new ChangeableText(15, 5, this.mFont, "Dodge From The Space", "Dodge From The Space".length());
+		mTitre = new ChangeableText(15, 5, mFont, "Dodge From The Space", "Dodge From The Space".length());
 		scene.getTopLayer().addEntity(mTitre);
+		
+		mBestScore = new ChangeableText(Consts.CAMERA_WIDTH-230, Consts.CAMERA_HEIGHT-35, mFontBestScore, "high score : ", "high score : XXXX".length());
+		scene.getTopLayer().addEntity(mBestScore);
 
-		mStart = new ChangeableText(50, (Consts.CAMERA_HEIGHT/2)-75, this.mFontItem,
+		mStart = new ChangeableText(50, (Consts.CAMERA_HEIGHT/2)-75, mFontItem,
 				"Start", "Start".length());
 		mStart.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		mStart.setAlpha(0.8f);
 		scene.getTopLayer().addEntity(mStart);
 
-		mSetting = new ChangeableText(50, (Consts.CAMERA_HEIGHT/2)-25, this.mFontItem,
+		mSetting = new ChangeableText(50, (Consts.CAMERA_HEIGHT/2)-25, mFontItem,
 				"Settings", "Settings".length());
 		mSetting.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		mSetting.setAlpha(0.8f);
 		scene.getTopLayer().addEntity(mSetting);
 
-		mHowToPlay = new ChangeableText(50, (Consts.CAMERA_HEIGHT/2)+25, this.mFontItem,
+		mHowToPlay = new ChangeableText(50, (Consts.CAMERA_HEIGHT/2)+25, mFontItem,
 				"How to play", "How to play".length());
 		mHowToPlay.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		mHowToPlay.setAlpha(0.8f);
 		scene.getTopLayer().addEntity(mHowToPlay);
 
-		mQuit = new ChangeableText(50, (Consts.CAMERA_HEIGHT/2)+75, this.mFontItem,
+		mQuit = new ChangeableText(50, (Consts.CAMERA_HEIGHT/2)+75, mFontItem,
 				"Exit", "Exit".length());
 		mQuit.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		mQuit.setAlpha(0.8f);
@@ -89,6 +98,10 @@ public class MenuText extends IGraphicsText {
 		mSetting.setVisible(false);
 		mHowToPlay.setVisible(false);
 		mQuit.setVisible(false);
+	}
+	
+	public void setBestScore(int score) {
+		mBestScore.setText("high score : " + String.valueOf(score));
 	}
 
 }
