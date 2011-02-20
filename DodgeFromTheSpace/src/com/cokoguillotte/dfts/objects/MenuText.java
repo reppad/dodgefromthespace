@@ -101,7 +101,9 @@ public class MenuText extends IGraphicsText {
 	}
 	
 	public void setBestScore(int score) {
-		mBestScore.setText("high score : " + String.valueOf(score));
+		if(mBestScore != null) {
+			mBestScore.setText("high score : " + String.valueOf(score));
+		}
 	}
 
 }

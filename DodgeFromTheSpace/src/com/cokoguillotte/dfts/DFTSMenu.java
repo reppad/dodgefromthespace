@@ -270,4 +270,14 @@ public class DFTSMenu extends BaseGameActivity implements IOnSceneTouchListener 
 		return super.onKeyDown(keyCode, event);
 	}
 	
+	@Override
+	protected void onResume() {
+		if(mMenu != null) {
+			SharedPreferences settings = getSharedPreferences("dftssettings", 0);
+			int bestScore = settings.getInt("best_distance", 0);
+			mMenu.setBestScore(bestScore);
+		}
+		super.onResume();
+	}
+	
 } //class

@@ -255,7 +255,6 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 
 			@Override
 			public void endContact(Contact contact) {
-				// TODO Auto-generated method stub
 			}
 			
 		});
@@ -315,8 +314,9 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		mScene.registerUpdateHandler(mGameOverScene);
 		
 		//Enregistrement du new best score si besoin
+		SharedPreferences settings = getSharedPreferences("dftssettings", 0);
+		mOldBestDistance = settings.getInt("best_distance", 0);
 		if(DistanceText.mDistance > mOldBestDistance){
-			SharedPreferences settings = getSharedPreferences("dftssettings", 0);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putInt("best_distance", DistanceText.mDistance);
 			editor.commit();
