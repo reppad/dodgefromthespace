@@ -15,15 +15,6 @@ import com.cokoguillotte.dfts.interfaces.IGraphicsObject;
 
 public class HowTo extends IGraphicsObject implements IUpdateHandler {
 	
-	public class Asteroid extends AnimatedSprite{
-
-		public Asteroid(float pX, float pY, float pTileWidth,
-				float pTileHeight, TiledTextureRegion pTiledTextureRegion) {
-			super(pX, pY, pTileWidth, pTileHeight, pTiledTextureRegion);
-		}
-		
-	}
-	
 	private Texture mTextureObject;
 	private TextureRegion mTiledTextureRegionHowto;
 	private Engine mEngine;

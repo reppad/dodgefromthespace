@@ -4,22 +4,19 @@ import javax.microedition.khronos.opengles.GL10;
 
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
-import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.engine.handler.timer.ITimerCallback;
 import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.anddev.andengine.entity.scene.CameraScene;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.entity.shape.modifier.AlphaModifier;
 import org.anddev.andengine.entity.shape.modifier.ParallelShapeModifier;
-import org.anddev.andengine.entity.shape.modifier.RotationModifier;
 import org.anddev.andengine.entity.shape.modifier.ScaleModifier;
 import org.anddev.andengine.entity.shape.modifier.SequenceShapeModifier;
-import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.text.Text;
-import org.anddev.andengine.entity.text.TickerText;
 import org.anddev.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
 import org.anddev.andengine.input.touch.TouchEvent;
@@ -32,8 +29,7 @@ import org.anddev.andengine.util.HorizontalAlign;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.util.Log;
+import android.view.KeyEvent;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -46,6 +42,7 @@ import com.cokoguillotte.dfts.objects.Astronautes;
 import com.cokoguillotte.dfts.objects.Astronautes.Astronaute;
 import com.cokoguillotte.dfts.objects.DistanceText;
 import com.cokoguillotte.dfts.objects.MusicPlayer;
+import com.cokoguillotte.dfts.objects.Pause;
 import com.cokoguillotte.dfts.objects.SoundsPlayer;
 import com.cokoguillotte.dfts.objects.SoundsPlayer.SoundsList;
 import com.cokoguillotte.dfts.objects.SpaceShip;
@@ -77,6 +74,9 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 	private boolean 			mStart;
 	public 	static int			mLife;
 	private int					mOldBestDistance;
+	
+	private CameraScene			mPauseScene;
+	private Pause				mPause;
 	
 	private Texture mFontTexture;
 	private Font mFont;
@@ -112,6 +112,9 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		mAstronaute = new Astronautes();
 		mAstronaute.setContext(this);
 		
+		mPause = new Pause();
+		mPause.setContext(this);
+		
 		EngineOptions eo = new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(Consts.CAMERA_WIDTH, Consts.CAMERA_HEIGHT), mCamera);
 		eo.setNeedsSound(true);
 		eo.setNeedsMusic(true);
@@ -128,6 +131,7 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		mAstronaute.loadResources(this.mEngine);
 		mSounds.loadResources(this.mEngine);
 		mMusic.loadResources(this.mEngine);
+		mPause.loadResources(this.mEngine);
 		
 		this.mFontTexture = new Texture(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 		this.mFont = FontFactory.createFromAsset(this.mFontTexture, this, "starjedi.ttf", 32, true, Color.WHITE);
@@ -142,6 +146,10 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 		mScreenTouched = false;
 		mGameOver = false;
 		mLife = 4;
+		
+		mPauseScene = new CameraScene(1, this.mCamera);
+		mPause.loadScene(mPauseScene);
+		mPauseScene.setBackgroundEnabled(false);
 		
 		//this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 0), false);
 		this.mPhysicsWorld = new FixedStepPhysicsWorld(30, new Vector2(0, 0), false, 8, 1);
@@ -328,6 +336,24 @@ public class DodgeFromTheSpace extends BaseGameActivity implements IOnSceneTouch
 			}
 		}
 		return true;
+	}
+	
+
+
+	@Override
+	public boolean onKeyDown(final int pKeyCode, final KeyEvent pEvent) {
+		if(pKeyCode == KeyEvent.KEYCODE_MENU && pEvent.getAction() == KeyEvent.ACTION_DOWN) {
+			if(this.mEngine.isRunning()) {
+				this.mScene.setChildScene(this.mPauseScene, false, true, true);
+				this.mEngine.stop();
+			} else {
+				this.mScene.clearChildScene();
+				this.mEngine.start();
+			}
+			return true;
+		} else {
+			return super.onKeyDown(pKeyCode, pEvent);
+		}
 	}
 	
 } //class
